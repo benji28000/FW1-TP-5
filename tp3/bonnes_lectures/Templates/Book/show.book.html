@@ -4,37 +4,45 @@
 
 {% block content %}
 
-    <style>
-        .link {
-            height: 1.5rem;
-            width: 1.5rem;
-            color: #01aaff;
-            transition-duration: 300ms;
+<main class="container" style="min-height: 100vh;">
+    <div class="card shadow-lg mt-5">
+        <div class="card-body">
+            <h2 class="card-title mb-4 text-center">Book Details</h2>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>Title:</strong> {{ book.title }}</li>
+                <li class="list-group-item"><strong>Publisher:</strong> {{ book.publisher }}</li>
+                <li class="list-group-item"><strong>Year:</strong> {{ book.year }}</li>
+                <li class="list-group-item"><strong>ISBN:</strong> {{ book.isbn }}</li>
+                <li class="list-group-item"><strong>Backcover:</strong> {{ book.backcover }}</li>
+                {% if book.cover %}
+                <li class="list-group-item"><strong>Cover:</strong> 
+                    <img src="{{ book.cover.url }}" alt="{{ book.title }}" class="img-thumbnail" style="max-width: 150px;">
+                </li>
+                {% endif %}
+            </ul>
 
-            &:hover {
-            color: #79C0FF
-            };
-        }
-    </style>
-
-    <main style="min-height: 100vh;" class="container">
-
-        <div><p>title : {{ book.title }}</p><p>publisher : {{ book.publisher }}</p><p>year : {{ book.year }}</p><p>isbn : {{ book.isbn }}</p><p>backcover : {{ book.backcover }}</p><p>cover : {{ book.cover }}</p></div>
-
-        <div style="display: flex; gap: 1rem">
-            <form action="{% url 'book_edit' book.id %}" method="get">
-                {% csrf_token %}
-                <button style="background-color: transparent; border-color: transparent; padding: 0">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="link"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 20h9M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></svg>
-                </button>
-            </form>
-            <form action="{% url 'book_delete' book.id %}" method="post">
-                {% csrf_token %}
-                <button style="background-color: transparent; border-color: transparent; padding: 0">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="link"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16m-10 4v6m4-6v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"/></svg>
-                </button>
-            </form>
+            <div class="d-flex justify-content-center gap-3 mt-4">
+                <form action="{% url 'book_edit' book.id %}" method="get" class="d-inline-block">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-secondary" type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="bi bi-pencil" width="24" height="24" fill="currentColor">
+                            <path d="M12 20h9M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/>
+                        </svg>
+                        Edit
+                    </button>
+                </form>
+                <form action="{% url 'book_delete' book.id %}" method="post" class="d-inline-block">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-danger" type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="bi bi-trash" width="24" height="24" fill="currentColor">
+                            <path d="M4 7h16m-10 4v6m4-6v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"/>
+                        </svg>
+                        Delete
+                    </button>
+                </form>
+            </div>
         </div>
-    </main>
+    </div>
+</main>
 
 {% endblock %}

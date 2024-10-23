@@ -1,3 +1,10 @@
+
+{# Load the tag library #}
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -6,12 +13,32 @@
         <title>{% block title %} t2 {% endblock %}</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+
+        
 
     </head>
     <body>
+        <header>
+            <nav class="navbar navbar-light navbar-expand-lg bg-body-tertiary">
+                <div class="container-fluid">
+                  <a class="navbar-brand" href="#">Navbar</a>
+                  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                  </button>
+                  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div class="navbar-nav">
+                      <a class="nav-link " href="/bonnes_lectures/">Home</a>
+                      <a class="nav-link" href="/bonnes_lectures/book">List</a>
+                      <a class="nav-link" href="/bonnes_lectures/about">About</a>
+                    </div>
+                  </div>
+                </div>
+              </nav>
+        </header>
+           
 
-        {% block content %}{% endblock %}
+        {% block content %}
+        {% endblock %}
 
     </body>
 
