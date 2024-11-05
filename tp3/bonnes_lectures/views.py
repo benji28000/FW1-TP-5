@@ -1,7 +1,6 @@
-from .models import Book
-from .forms import BookForm
-from .models import Book
-from .forms import BookForm
+from .forms import BookForm, ReviewForm
+from .models import Book, Review
+
 from django.shortcuts import render, redirect
 
 # Create your views here.
@@ -92,3 +91,66 @@ def bookdelete(request, id=None):
         book = Book.objects.get(id=id)
         book.delete()
     return redirect('book_list')
+
+def reviewcreate(request):
+    form = ReviewForm()
+    if (request.method == "POST"):
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('review_list')
+    return render(
+        request,
+        "Reviews/create.review.html",
+        {
+            'form': form
+        }
+    )
+
+def reviewlist(request):
+    reviews = Review.objects.all()
+    return render(
+        request,
+        "Reviews/index.review.html",
+        {
+            'reviews': reviews.values()
+        }
+    )
+
+def reviewshow(request, id=None):
+    review = Review.objects.get(id=id)
+    return render(
+        request,
+        "Reviews/show.review.html",
+        {
+            'review': review
+        }
+    )
+
+def reviewedit(request, id=None):
+    review = Review.objects.get(id=id)
+    if (request.method == "POST"):
+        form=ReviewForm(request.POST,instance=review)
+        if(form.is_valid()):
+            form.save()
+            return redirect('review_show', id)
+    else:
+        form = ReviewForm(instance=review)
+
+    return render(
+        request,
+        "Reviews/edit.review.html",
+        {
+            'form': form,
+            'review': review
+        }
+    )
+
+def reviewdelete(request, id=None):
+    if (request.method == "POST"):
+        review = Review.objects.get(id=id)
+        review.delete()
+    return redirect('review_list')
+
+
+

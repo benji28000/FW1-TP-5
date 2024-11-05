@@ -2,40 +2,23 @@
 
 {% load static %}
 
-{% block title %} Book show {% endblock %}
+{% block title %} Review show {% endblock %}
 
 {% block content %}
 
 <main class="container" style="min-height: 100vh;">
     <div class="card shadow-lg mt-5">
         <div class="card-body">
-            <h2 class="card-title mb-4 text-center">Book Details</h2>
+            <h2 class="card-title mb-4 text-center">Review Details</h2>
             <ul class="list-group list-group-flush">
-                <li class="list-group-item"><strong>Title:</strong> {{ book.title }}</li>
-                <li class="list-group-item"><strong>Publisher:</strong> {{ book.publisher }}</li>
-                <li class="list-group-item"><strong>Year:</strong> {{ book.year }}</li>
-                <li class="list-group-item"><strong>ISBN:</strong> {{ book.isbn }}</li>
-                <li class="list-group-item"><strong>Backcover:</strong> {{ book.backcover }}</li>
-                {% if book.cover %}
-                <li class="list-group-item"><strong>Cover:</strong> 
-                    <img src="{{ book.cover.url }}" alt="{{ book.title }}" class="img-thumbnail" style="max-width: 150px;">
-                </li>
-                {% endif %}
-
-                <div>
-                    <h3>Reviews</h3>
-                    <ul>
-                        {% for review in book.review_set.all %}
-                        <li>
-                            <a href="{% url 'review_show' review.id %}">{{ review.text }}</a>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
+                <li class="list-group-item"><strong>Texte:</strong> {{ review.text }}</li>
+                <li class="list-group-item"><strong>Date:</strong> {{ review.date }}</li>
+                <li class="list-group-item"><strong>Note:</strong> {{ review.note }}</li>
+                <li class="list-group-item"><strong>Book:</strong> {{ review.book.title }}</li>
             </ul>
 
             <div class="d-flex justify-content-center gap-3 mt-4">
-                <form action="{% url 'book_edit' book.id %}" method="get" class="d-inline-block">
+                <form action="{% url 'review_edit' review.id %}" method="get" class="d-inline-block">
                     {% csrf_token %}
                     <button class="btn btn-outline-secondary" type="submit">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="bi bi-pencil" width="24" height="24" fill="currentColor">
@@ -44,7 +27,7 @@
                         Edit
                     </button>
                 </form>
-                <form action="{% url 'book_delete' book.id %}" method="post" class="d-inline-block">
+                <form action="{% url 'review_delete' review.id %}" method="post" class="d-inline-block">
                     {% csrf_token %}
                     <button class="btn btn-outline-danger" type="submit">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="bi bi-trash" width="24" height="24" fill="currentColor">

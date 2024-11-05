@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %} Review edit {% endblock %}
+
+{% block content %}
+
+    <main style="min-height: 100vh;" class="container">
+        <form action="{% url 'review_edit' review.id %}" method="post">
+            {{ form }}
+            {% csrf_token %}
+            <button type="submit">Apply changes</button>
+        </form>
+    </main>
+
+{% endblock %}
