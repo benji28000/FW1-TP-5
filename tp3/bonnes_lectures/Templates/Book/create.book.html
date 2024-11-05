@@ -21,10 +21,10 @@
             <div class="card shadow-lg p-4">
                 <div class="card-body ">
                     <h1 class="card-title mb-4">Create a New Book</h1>
-                    <form action="{% url 'book_create' %}" method="post">
+                    <form action="{% url 'book_create' %}" method="post" enctype="multipart/form-data">
                         {{ form }}
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-primary btn-lg mt-4 ">Submit</button>
+                        <button type="submit" class="btn btn-primary btn-lg mt-4">Submit</button>
                     </form>
                 </div>
             </div>

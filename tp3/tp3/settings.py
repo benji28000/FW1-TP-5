@@ -1,3 +1,4 @@
+import os
 """
 Django settings for tp3 project.
 
@@ -124,6 +125,5 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-Path(BASE_DIR, 'public')
-MEDIA_URL = '/public/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Emplacement physique des fichiers uploadés
+MEDIA_URL = '/media/'  # URL pour accéder aux fichiers
