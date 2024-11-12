@@ -1,5 +1,6 @@
 from django import forms
-from .models import Book, Review
+from .models import Book, Review, Author
+from django.contrib.auth.models import User
 
 class BookForm(forms.ModelForm):
     class Meta:
@@ -23,4 +24,32 @@ class ReviewForm(forms.ModelForm):
             'text': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Enter the review'}),
             'note': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter the note'}),
             'book': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+class AuthorForm(forms.ModelForm):
+    class Meta:
+        model = Author
+        fields = ['nom', 'prenom']
+        widgets = {
+            'nom': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter the last name'}),
+            'prenom': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter the first name'}),
+        }
+
+class InscriptionForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username','email', 'password']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter the username'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter the email'}),
+            'password': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Enter the password'}),
+        }
+
+class LoginForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'password']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter the username'}),
+            'password': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Enter the password'}),
         }

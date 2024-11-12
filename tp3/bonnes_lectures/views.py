@@ -1,5 +1,8 @@
-from .forms import BookForm, ReviewForm
-from .models import Book, Review
+from .forms import BookForm, ReviewForm, AuthorForm, InscriptionForm, LoginForm
+from .models import Book, Review, Author
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate,login, logout
+from django.contrib.auth.forms import AuthenticationForm
 
 from django.shortcuts import render, redirect
 
@@ -37,6 +40,8 @@ def bookcreate(request):
     if (request.method == "POST"):
         form = BookForm(request.POST, request.FILES)
         if form.is_valid():
+            user = request.user
+            form.instance.user = user
             form.save()
             return redirect('book_list')
     return render(
@@ -53,17 +58,20 @@ def booklist(request):
         request,
         "Book/index.book.html",
         {
-            'books': books.values()
+            'books': books.values(),
+
         }
     )
 
 def bookshow(request, id=None):
     book = Book.objects.get(id=id)
+    list1_to_5 = [1, 2, 3, 4, 5]
     return render(
         request,
         "Book/show.book.html",
         {
-            'book': book
+            'book': book,
+            'list1_to_5': list1_to_5
         }
     )
 
@@ -97,6 +105,8 @@ def reviewcreate(request):
     if (request.method == "POST"):
         form = ReviewForm(request.POST)
         if form.is_valid():
+            user = request.user
+            form.instance.user = user
             form.save()
             return redirect('review_list')
     return render(
@@ -151,6 +161,102 @@ def reviewdelete(request, id=None):
         review = Review.objects.get(id=id)
         review.delete()
     return redirect('review_list')
+
+def authorcreate(request):
+    form = AuthorForm()
+    if (request.method == "POST"):
+        form = AuthorForm(request.POST)
+        if form.is_valid():
+            user = request.user
+            form.instance.user = user
+            form.save()
+            return redirect('author_list')
+    return render(
+        request,
+        "Author/create.author.html",
+        {
+            'form': form
+        }
+    )
+
+def authorlist(request):
+    authors = Author.objects.all()
+    return render(
+        request,
+        "Author/index.author.html",
+        {
+            'authors': authors.values()
+        }
+    )
+
+def authorshow(request, id=None):
+    author = Author.objects.get(id=id)
+    return render(
+        request,
+        "Author/show.author.html",
+        {
+            'author': author
+        }
+    )
+
+def authoredit(request, id=None):
+    author = Author.objects.get(id=id)
+    if (request.method == "POST"):
+        form=AuthorForm(request.POST,instance=author)
+        if(form.is_valid()):
+            form.save()
+            return redirect('author_show', id)
+    else:
+        form = AuthorForm(instance=author)
+
+    return render(
+        request,
+        "Author/edit.author.html",
+        {
+            'form': form,
+            'author': author
+        }
+    )
+def authordelete(request, id=None):
+    if (request.method == "POST"):
+        author = Author.objects.get(id=id)
+        author.delete()
+    return redirect('author_list')
+
+
+
+
+def Inscription(request):
+    form = InscriptionForm()
+    if request.method == "POST":
+        form = InscriptionForm(request.POST)
+        if form.is_valid():
+            user = User.objects.create_user(
+                username=form.cleaned_data['username'],
+                email=form.cleaned_data['email'],
+                password=form.cleaned_data['password']
+            )
+            login(request, user)
+            return redirect('index')
+        else:
+            return render(request, "inscription.html", {'form': form})
+    return render(request, "inscription.html", {'form': form})
+
+
+
+def Login(request):
+    form = AuthenticationForm(request, data=request.POST or None)
+    if request.method == "POST":
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('book_list')
+    return render(request, "login.html", {"form": form})
+
+def Logout(request):
+    logout(request)
+    return redirect('login')
+
 
 
 

@@ -25,10 +25,21 @@
                 <div>
                     <h3>Reviews</h3>
                     <ul>
-                        {% for review in book.review_set.all %}
-                        <li>
-                            <a href="{% url 'review_show' review.id %}">{{ review.text }}</a>
-                        </li>
+                        {% for review in book.reviews.all %}
+                        <div>
+                            <h6>Fait le {{review.date}}</h4>
+                            <p>
+                            {% for i in list1_to_5 %}
+                            {% if i <= review.note %}
+                            ★
+                            {% else %}
+                            ☆
+                            {% endif %}
+                            {% endfor %}
+                        </p>
+                            <p>Avis : {{ review.text }}</p>
+                            <p>Utilisateur :  {{review.user}}</p>
+                        </div>
                         {% endfor %}
                     </ul>
                 </div>
