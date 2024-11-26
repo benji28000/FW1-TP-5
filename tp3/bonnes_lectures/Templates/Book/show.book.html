@@ -12,7 +12,9 @@
             <h2 class="card-title mb-4 text-center">Book Details</h2>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item"><strong>Title:</strong> {{ book.title }}</li>
-                <li class="list-group-item"><strong>Publisher:</strong> {{ book.publisher }}</li>
+                {% for author in book.authors.all %}
+                <li class="list-group item"><strong>Author:</strong> {{ author.prenom }}</li>
+                {% endfor %}
                 <li class="list-group-item"><strong>Year:</strong> {{ book.year }}</li>
                 <li class="list-group-item"><strong>ISBN:</strong> {{ book.isbn }}</li>
                 <li class="list-group-item"><strong>Backcover:</strong> {{ book.backcover }}</li>

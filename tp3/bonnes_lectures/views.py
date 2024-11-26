@@ -3,6 +3,8 @@ from .models import Book, Review, Author
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login, logout
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.decorators import login_required
+
 
 from django.shortcuts import render, redirect
 
@@ -35,13 +37,13 @@ def welcome(request):
         }
     )
 
+@login_required
 def bookcreate(request):
     form = BookForm()
     if (request.method == "POST"):
         form = BookForm(request.POST, request.FILES)
         if form.is_valid():
-            user = request.user
-            form.instance.user = user
+            form.instance.user = request.user
             form.save()
             return redirect('book_list')
     return render(
@@ -52,13 +54,14 @@ def bookcreate(request):
         }
     )
 
+
 def booklist(request):
     books = Book.objects.all()
     return render(
         request,
         "Book/index.book.html",
         {
-            'books': books.values(),
+            'books': books,
 
         }
     )
@@ -75,6 +78,7 @@ def bookshow(request, id=None):
         }
     )
 
+@login_required
 def bookedit(request, id=None):
     book = Book.objects.get(id=id)
     if (request.method == "POST"):
@@ -94,12 +98,14 @@ def bookedit(request, id=None):
         }
     )
 
+@login_required
 def bookdelete(request, id=None):
     if (request.method == "POST"):
         book = Book.objects.get(id=id)
         book.delete()
     return redirect('book_list')
 
+@login_required
 def reviewcreate(request):
     form = ReviewForm()
     if (request.method == "POST"):
@@ -137,6 +143,7 @@ def reviewshow(request, id=None):
         }
     )
 
+@login_required
 def reviewedit(request, id=None):
     review = Review.objects.get(id=id)
     if (request.method == "POST"):
@@ -156,12 +163,14 @@ def reviewedit(request, id=None):
         }
     )
 
+@login_required
 def reviewdelete(request, id=None):
     if (request.method == "POST"):
         review = Review.objects.get(id=id)
         review.delete()
     return redirect('review_list')
 
+@login_required
 def authorcreate(request):
     form = AuthorForm()
     if (request.method == "POST"):
@@ -199,6 +208,7 @@ def authorshow(request, id=None):
         }
     )
 
+@login_required
 def authoredit(request, id=None):
     author = Author.objects.get(id=id)
     if (request.method == "POST"):
@@ -217,6 +227,8 @@ def authoredit(request, id=None):
             'author': author
         }
     )
+
+@login_required
 def authordelete(request, id=None):
     if (request.method == "POST"):
         author = Author.objects.get(id=id)
