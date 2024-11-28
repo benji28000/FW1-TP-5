@@ -24,17 +24,13 @@
             </h1>
         </div>
         <div id="bookList">
-            <form action="{% url 'review_create' %}">
-                <button type="submit" class="btn btn-success">New Review</button>
-            </form>
+            
             {% for review in reviews %}
                 <ul style="border-color: #EFF1F4;border-width: 2px; border-radius: .5rem; border-style: solid; padding: .5rem .5rem .5rem .5rem ">
                     <div class="grid">
-                        {% for key,value in review.items %}
-                            <p>
-                                {{ key }} : {{ value }}
-                            </p>
-                        {% endfor %}
+                        <p>Titre : {{ review.book.title }}</p>
+                        <p>Note : {{ review.note }}</p>
+                        <p>Créé par : {{ review.user.username }}</p>
                     </div>
 
                     <div style="display: flex; gap: 1rem">
@@ -45,6 +41,7 @@
                             </button>
                         </form>
 
+                        {% if review.user.username == request.user.username %}
                         <form action="{% url 'review_edit' review.id %}" method="get">
                             {% csrf_token %}
                             <button style="background-color: transparent; border-color: transparent; padding: 0">
@@ -57,9 +54,27 @@
                             <button style="background-color: transparent; border-color: transparent; padding: 0">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" class="link"><path fill="currentColor" d="M2.037 3.225A.7.7 0 0 1 2 3c0-1.105 2.686-2 6-2s6 .895 6 2a.7.7 0 0 1-.037.225l-1.684 10.104A2 2 0 0 1 10.305 15H5.694a2 2 0 0 1-1.973-1.671zm9.89-.69C10.966 2.214 9.578 2 8 2c-1.58 0-2.968.215-3.926.534c-.477.16-.795.327-.975.466c.18.14.498.307.975.466C5.032 3.786 6.42 4 8 4s2.967-.215 3.926-.534c.477-.16.795-.327.975-.466c-.18-.14-.498-.307-.975-.466z"/></svg>                            </button>
                         </form>
+                        {% endif %}
                     </div>
                 </ul>
             {% endfor %}
+            <div class="pagination">
+                <span class="step-links">
+                    {% if reviews.has_previous %}
+                        <a href="?page=1">&laquo; first</a>
+                        <a href="?page={{ reviews.previous_page_number }}">previous</a>
+                    {% endif %}
+            
+                    <span class="current">
+                        Page {{ reviews.number }} of {{ reviews.paginator.num_pages }}.
+                    </span>
+            
+                    {% if reviews.has_next %}
+                        <a href="?page={{ reviews.next_page_number }}">next</a>
+                        <a href="?page={{ reviews.paginator.num_pages }}">last &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>
         </div>
     </main>
 

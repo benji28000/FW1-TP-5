@@ -2,73 +2,92 @@
 
 {% load static %}
 
-{% block title %} Book show {% endblock %}
+{% block title %} Book Show {% endblock %}
 
 {% block content %}
-
-<main class="container" style="min-height: 100vh;">
-    <div class="card shadow-lg mt-5">
+<main class="container" style="min-height: 100vh; padding-top: 50px;">
+    <div class="card shadow-lg bg-light">
         <div class="card-body">
-            <h2 class="card-title mb-4 text-center">Book Details</h2>
+            <h2 class="card-title text-center text-primary mb-4">Book Details</h2>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item"><strong>Title:</strong> {{ book.title }}</li>
                 {% for author in book.authors.all %}
-                <li class="list-group item"><strong>Author:</strong> {{ author.prenom }}</li>
+                <li class="list-group-item"><strong>Author:</strong> {{ author.prenom }}</li>
                 {% endfor %}
                 <li class="list-group-item"><strong>Year:</strong> {{ book.year }}</li>
                 <li class="list-group-item"><strong>ISBN:</strong> {{ book.isbn }}</li>
                 <li class="list-group-item"><strong>Backcover:</strong> {{ book.backcover }}</li>
                 {% if book.cover %}
-                <li class="list-group-item"><strong>Cover:</strong> 
-                    <img src="{{ book.cover.url }}" alt="{{ book.title }}" class="img-thumbnail" style="max-width: 150px;">
+                <li class="list-group-item text-center">
+                    <strong>Cover:</strong>
+                    <img src="{{ book.cover.url }}" alt="{{ book.title }}" class="img-thumbnail mt-3" style="max-width: 150px;">
                 </li>
                 {% endif %}
-
-                <div>
-                    <h3>Reviews</h3>
-                    <ul>
-                        {% for review in book.reviews.all %}
-                        <div>
-                            <h6>Fait le {{review.date}}</h4>
-                            <p>
-                            {% for i in list1_to_5 %}
-                            {% if i <= review.note %}
-                            ★
-                            {% else %}
-                            ☆
-                            {% endif %}
-                            {% endfor %}
-                        </p>
-                            <p>Avis : {{ review.text }}</p>
-                            <p>Utilisateur :  {{review.user}}</p>
-                        </div>
-                        {% endfor %}
-                    </ul>
-                </div>
             </ul>
 
+            <h3 class="mt-5 mb-3 text-secondary">Reviews</h3>
+            <ul class="list-group">
+                {% for review in book.reviews.all %}
+                <li class="list-group-item">
+                    <div>
+                        <h6 class="text-muted">Posted on {{ review.date }}</h6>
+                        <p class="text-warning">
+                            {% for i in list1_to_5 %}
+                                {% if i <= review.note %}
+                                ★
+                                {% else %}
+                                ☆
+                                {% endif %}
+                            {% endfor %}
+                        </p>
+                        <p><strong>Review:</strong> {{ review.text }}</p>
+                        <p><strong>User:</strong> {{ review.user }}</p>
+                    </div>
+                    {% if review.user.username == request.user.username %}
+                    <div class="mt-2">
+                        <form action="{% url 'review_edit' review.id %}" method="get" class="d-inline-block">
+                            {% csrf_token %}
+                            <button class="btn btn-outline-secondary btn-sm" type="submit">
+                                Edit
+                            </button>
+                        </form>
+                        <form action="{% url 'review_delete' review.id %}" method="post" class="d-inline-block">
+                            {% csrf_token %}
+                            <button class="btn btn-outline-danger btn-sm" type="submit">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+
+            {% if book.user.username == request.user.username %}
             <div class="d-flex justify-content-center gap-3 mt-4">
                 <form action="{% url 'book_edit' book.id %}" method="get" class="d-inline-block">
                     {% csrf_token %}
                     <button class="btn btn-outline-secondary" type="submit">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="bi bi-pencil" width="24" height="24" fill="currentColor">
-                            <path d="M12 20h9M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/>
-                        </svg>
-                        Edit
+                        Edit Book
                     </button>
                 </form>
                 <form action="{% url 'book_delete' book.id %}" method="post" class="d-inline-block">
                     {% csrf_token %}
                     <button class="btn btn-outline-danger" type="submit">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="bi bi-trash" width="24" height="24" fill="currentColor">
-                            <path d="M4 7h16m-10 4v6m4-6v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"/>
-                        </svg>
-                        Delete
+                        Delete Book
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+            <div class="text-center mt-4">
+                <form action="{% url 'review_create' book.id %}" method="post" class="d-inline-block">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-primary">
+                        Add Review
                     </button>
                 </form>
             </div>
         </div>
     </div>
 </main>
-
 {% endblock %}

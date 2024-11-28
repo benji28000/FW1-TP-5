@@ -36,7 +36,6 @@
                         {% endfor %}
                         <p>Créé par : {{ book.user.username }}</p>
                     </div>
-                    {% if book.user.username == request.user.username %}
 
                         <div style="display: flex; gap: 1rem">
                             <form action="{% url 'book_show' book.id %}" method="get">
@@ -45,6 +44,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="link"><path fill="none" stroke="currentColor" color="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.099 3c-3.65.007-5.56.096-6.781 1.318C3 5.636 3 7.757 3 12c0 4.242 0 6.364 1.318 7.682S7.757 21 11.998 21c4.243 0 6.364 0 7.682-1.318c1.22-1.221 1.31-3.133 1.317-6.782m-.441-9.404L11.05 13.06m9.507-9.563c-.494-.494-3.822-.448-4.525-.438m4.525.438c.494.495.448 3.827.438 4.531"/></svg>
                                 </button>
                             </form>
+                            {% if book.user.username == request.user.username %}
 
                             <form action="{% url 'book_edit' book.id %}" method="get">
                                 {% csrf_token %}
@@ -63,6 +63,23 @@
 
                 </ul>
             {% endfor %}
+            <div class="pagination">
+                <span class="step-links">
+                    {% if books.has_previous %}
+                        <a href="?page=1">&laquo; first</a>
+                        <a href="?page={{ books.previous_page_number }}">previous</a>
+                    {% endif %}
+            
+                    <span class="current">
+                        Page {{ books.number }} of {{ books.paginator.num_pages }}.
+                    </span>
+            
+                    {% if books.has_next %}
+                        <a href="?page={{ books.next_page_number }}">next</a>
+                        <a href="?page={{ books.paginator.num_pages }}">last &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>
         </div>
     </main>
 

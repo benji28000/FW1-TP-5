@@ -4,6 +4,9 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+from django.db.models import Sum, Avg
+
 
 
 from django.shortcuts import render, redirect
@@ -11,11 +14,14 @@ from django.shortcuts import render, redirect
 # Create your views here.
 
 def index(request):
+    booksWithAverageReviewsNote = Book.objects.annotate(sum_reviews_note=Avg('reviews__note'))
+    bestRatedBooks = booksWithAverageReviewsNote.order_by('-sum_reviews_note')[:5]
     return render(
         request,
         "index.html",
         {
-            'view_name': "bonnes_lectures_view"
+            'view_name': "bonnes_lectures_view",
+            'bestratedbooks': bestRatedBooks
         }
     )
 
@@ -57,6 +63,10 @@ def bookcreate(request):
 
 def booklist(request):
     books = Book.objects.all()
+    page = request.GET.get('page')
+    paginator = Paginator(books, 5)
+    books = paginator.get_page(page)
+    
     return render(
         request,
         "Book/index.book.html",
@@ -106,30 +116,37 @@ def bookdelete(request, id=None):
     return redirect('book_list')
 
 @login_required
-def reviewcreate(request):
+def reviewcreate(request, id=None):
     form = ReviewForm()
+    book = Book.objects.get(id=id)
     if (request.method == "POST"):
         form = ReviewForm(request.POST)
         if form.is_valid():
             user = request.user
             form.instance.user = user
+            form.instance.book = book
             form.save()
             return redirect('review_list')
     return render(
         request,
         "Reviews/create.review.html",
         {
-            'form': form
+            'form': form,
+            'book': book
         }
     )
 
 def reviewlist(request):
     reviews = Review.objects.all()
+    page = request.GET.get('page')
+    paginator = Paginator(reviews, 5)
+    reviews = paginator.get_page(page)
+
     return render(
         request,
         "Reviews/index.review.html",
         {
-            'reviews': reviews.values()
+            'reviews': reviews
         }
     )
 
@@ -171,7 +188,8 @@ def reviewdelete(request, id=None):
     return redirect('review_list')
 
 @login_required
-def authorcreate(request):
+def authorcreate(request, id=None):
+    book = Book.objects.get(id=id)
     form = AuthorForm()
     if (request.method == "POST"):
         form = AuthorForm(request.POST)
@@ -184,7 +202,8 @@ def authorcreate(request):
         request,
         "Author/create.author.html",
         {
-            'form': form
+            'form': form,
+            'book': book
         }
     )
 
@@ -194,7 +213,7 @@ def authorlist(request):
         request,
         "Author/index.author.html",
         {
-            'authors': authors.values()
+            'authors': authors
         }
     )
 

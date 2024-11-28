@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
+
 {% block title %} {{ view_name }} {% endblock %}
 
 {% block content %}
@@ -17,6 +18,19 @@
 
             <h2 class="mb-3">Application Bonnes Lectures</h2>
             <p class="lead">Développée en TP de Framework Web, Université d’Orléans 2024</p>
+
+            {% for book in bestratedbooks %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ book.title }}</h5>
+                    </div>
+                    {% for review in book.reviews.all %}
+                        <div class="card-body">
+                            <p class="card-text"> note: {{ review.note }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
         </div>
     </main>
 
